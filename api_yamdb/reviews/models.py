@@ -11,7 +11,7 @@ class Title(models.Model):
 
 class Review(models.Model):
     title = models.ForeignKey(
-        to='Title',
+        to=Title,
         on_delete=models.CASCADE,
         related_name='reviews',
         verbose_name='Произведение'
@@ -40,6 +40,10 @@ class Review(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+        # TODO: Check this!
+        title = self.title
+        rating = Review.objects.filter(title=title).aggregate(models.Avg('rating'))
+        title.save(rating=rating)
 
 
 class Comment(models.Model):
