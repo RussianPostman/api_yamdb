@@ -1,3 +1,4 @@
+from tabnanny import verbose
 from django.db import models
 from django.contrib.auth import get_user_model
 
@@ -19,6 +20,13 @@ class Review(models.Model):
         auto_now_add=True
     )
 
+    class Meta:
+        verbose_name = 'Ревью'
+        verbose_name_plural = 'Ревью'
+
+    def __str__(self):
+        return f'{self.author.username}: {self.text}'
+
 
 class Comment(models.Model):
     text = models.TextField(verbose_name='Текст')
@@ -38,3 +46,9 @@ class Comment(models.Model):
         verbose_name='Время добавления',
         auto_now_add=True
     )
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+    
+    def __str__(self):
+        return f'{self.author.username}: {self.text}'
