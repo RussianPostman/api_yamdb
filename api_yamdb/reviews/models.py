@@ -1,8 +1,6 @@
 from tabnanny import verbose
 from django.db import models
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+from django.conf import settings
 
 
 class Title(models.Model):
@@ -18,7 +16,7 @@ class Review(models.Model):
     )
     text = models.TextField(verbose_name='Текст')
     author = models.ForeignKey(
-        to=User,
+        to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='reviews',
         verbose_name='Автор'
@@ -49,7 +47,7 @@ class Review(models.Model):
 class Comment(models.Model):
     text = models.TextField(verbose_name='Текст')
     author = models.ForeignKey(
-        to=User,
+        to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='Автор'
