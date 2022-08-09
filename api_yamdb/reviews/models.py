@@ -4,7 +4,18 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
+class Title(models.Model):
+    ...
+
+
 class Review(models.Model):
+    title = models.ForeignKey(
+        to='Title',
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Произведение'
+    )
     text = models.TextField(verbose_name='Текст')
     author = models.ForeignKey(
         to=User,
@@ -26,6 +37,9 @@ class Review(models.Model):
 
     def __str__(self):
         return f'{self.author.username}: {self.text}'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
 
 class Comment(models.Model):
