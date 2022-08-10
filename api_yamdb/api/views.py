@@ -10,7 +10,8 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
     def perform_create(self, serializer):
-        return super().perform_create(serializer)
+        review_id = self.kwargs.get('review_id')
+        serializer.save(author=self.request.user, review_id=review_id)
 
     def get_queryset(self):
         review_id = self.kwargs.get('review_id')
@@ -24,7 +25,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
 
     def perform_create(self, serializer):
-        return super().perform_create(serializer)
+        title_id = self.kwargs.get('title_id')
+        serializer.save(author=self.request.user, title_id=title_id)
 
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
