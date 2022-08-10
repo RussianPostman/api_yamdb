@@ -18,6 +18,9 @@ class Category(models.Model):
         verbose_name='Слаг категории.'
     )
 
+    def __str__(self) -> str:
+        return self.slug
+
 
 class Genre(models.Model):
     """Жанры произведений."""
@@ -30,6 +33,9 @@ class Genre(models.Model):
         unique=True,
         verbose_name='Слаг жанра.'
     )
+
+    def __str__(self) -> str:
+        return self.slug
 
 
 class Titles(models.Model):
@@ -59,47 +65,26 @@ class Titles(models.Model):
     )
     genre = models.ManyToManyField(
         Genre,
-        through='GenreСonnect'
+        through='GenreConnect'
     )
     category = models.ForeignKey(
         Category,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
         related_name='category',
         verbose_name='Категория',
     )
 
 
-class RatingValue(models.Model):
-    """Значения рейтинга."""
-
-    value = models.SmallIntegerField(
-        default=0
-    )
-
-    def __str__(self) -> str:
-        return self.value
-
-    class Meta:
-        verbose_name = 'Значение рейтинга'
-
-
-class Rating(models.Model):
-    """Рейтинг."""
-
-    rating = models.ForeignKey(
-        RatingValue,
-        on_delete=models.CASCADE,
-        verbose_name='Рейтинг'
-    )
+class GenreConnect(models.Model):
     title = models.ForeignKey(
         Titles,
-        on_delete=models.CASCADE,
-        verbose_name='Произведение искусства'
+        on_delete=models.CASCADE
+    )
+    genre = models.ForeignKey(
+        Genre,
+        on_delete=models.CASCADE
     )
 
     def __str__(self) -> str:
-        return f'{self.rating} - {self.title}'
-
-    class Meta:
-        verbose_name = 'Рейтинг'
-        verbose_name_plural = 'Рейтинги'
+        return self.genre
