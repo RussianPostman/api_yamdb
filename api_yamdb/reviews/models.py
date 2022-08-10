@@ -36,7 +36,7 @@ class Genre(models.Model):
         return self.slug
 
 
-class Titles(models.Model):
+class Title(models.Model):
     """Произведение искусства."""
 
     name = models.CharField(
@@ -76,7 +76,7 @@ class Titles(models.Model):
 
 class Review(models.Model):
     title = models.ForeignKey(
-        to=Titles,
+        to=Title,
         on_delete=models.CASCADE,
         related_name='reviews',
         verbose_name='Произведение'
@@ -146,7 +146,7 @@ class Comment(models.Model):
 
 class GenreConnect(models.Model):
     title = models.ForeignKey(
-        Titles,
+        Title,
         on_delete=models.CASCADE
     )
     genre = models.ForeignKey(
