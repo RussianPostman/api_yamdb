@@ -45,7 +45,8 @@ class Review(models.Model):
         super().save(*args, **kwargs)
         title = self.title
         rating = Review.objects.filter(title=title).aggregate(average=models.Avg('score'))
-        title.rating = rating['average']
+        if rating['average']:
+            title.rating = int(rating['average'])
         title.save()
 
 class Comment(models.Model):
