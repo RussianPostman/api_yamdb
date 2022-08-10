@@ -38,11 +38,10 @@ class Review(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        # TODO: Check this!
         title = self.title
-        rating = Review.objects.filter(title=title).aggregate(models.Avg('rating'))
-        title.save(rating=rating)
-
+        rating = Review.objects.filter(title=title).aggregate(average=models.Avg('score'))
+        title.rating = rating['average']
+        title.save()
 
 class Comment(models.Model):
     text = models.TextField(verbose_name='Текст')
