@@ -1,6 +1,7 @@
 from tabnanny import verbose
 from django.db import models
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Title(models.Model):
@@ -22,6 +23,10 @@ class Review(models.Model):
         verbose_name='Автор'
     )
     score = models.SmallIntegerField(
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(10),
+        ],
         verbose_name='Оценка',
     )
     pub_date = models.DateTimeField(
