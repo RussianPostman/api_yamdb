@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,14 +22,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'rest_framework',
     'api.apps.ApiConfig',
     'reviews.apps.ReviewsConfig',
-    'users.apps.UsersConfig',
-  
-    'rest_framework',
-  
-  
+    'users.apps.UsersConfig'
 ]
 
 MIDDLEWARE = [
@@ -74,7 +71,8 @@ DATABASES = {
 
 
 # Password validation
-
+AUTH_USER_MODEL = 'users.User'
+AUTH_PROFILE_MODULE = 'users.User'
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -109,3 +107,19 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = (os.path.join(BASE_DIR, 'email/'),)
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny', 
+    )
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'AUTH_HEADER_TYPES': ('Token',),
+}
