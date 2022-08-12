@@ -9,7 +9,8 @@ from reviews.models import Comment, Review, Genre, Category, Title
 from .serializers import (ReviewSerializer,
                           CommentSerializer,
                           GenreSerializer,
-                          CategorySerializer)
+                          CategorySerializer,
+                          TitleSerializer)
 
 
 class CreateListDestroyViewSet(mixins.CreateModelMixin,
@@ -67,3 +68,5 @@ class CategoryViewSet(CreateListDestroyViewSet):
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
+    serializer_class = TitleSerializer
+
