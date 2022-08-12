@@ -1,4 +1,3 @@
-from tabnanny import verbose
 from django.db import models
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -37,7 +36,7 @@ class Genre(models.Model):
         return self.slug
 
 
-class Titles(models.Model):
+class Title(models.Model):
     """Произведение искусства."""
 
     name = models.CharField(
@@ -111,7 +110,8 @@ class Review(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         title = self.title
-        rating = Review.objects.filter(title=title).aggregate(average=models.Avg('score'))
+        rating = Review.objects.filter(title=title).aggregate(
+            average=models.Avg('score'))
         if rating['average']:
             title.rating = int(rating['average'])
         title.save()
@@ -135,17 +135,18 @@ class Comment(models.Model):
         verbose_name='Время добавления',
         auto_now_add=True
     )
+
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
-    
+
     def __str__(self):
         return f'{self.author.username}: {self.text}'
-        
-        
+
+
 class GenreConnect(models.Model):
     title = models.ForeignKey(
-        Titles,
+        Title,
         on_delete=models.CASCADE
     )
     genre = models.ForeignKey(
@@ -155,4 +156,3 @@ class GenreConnect(models.Model):
 
     def __str__(self) -> str:
         return self.genre
-
