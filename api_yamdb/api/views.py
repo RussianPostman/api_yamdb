@@ -1,7 +1,22 @@
 from rest_framework import viewsets
 from rest_framework.pagination import LimitOffsetPagination
-from reviews.models import Comment, Review
-from .serializers import ReviewSerializer, CommentSerializer
+
+from rest_framework import mixins
+# from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
+
+from reviews.models import Comment, Review, Genre, Category, Title
+from .serializers import (ReviewSerializer,
+                          CommentSerializer,
+                          GenreSerializer,
+                          CategorySerializer)
+
+
+class CreateListDestroyViewSet(mixins.CreateModelMixin,
+                               mixins.ListModelMixin,
+                               mixins.DestroyModelMixin,
+                               viewsets.GenericViewSet,):
+    pass
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -32,3 +47,23 @@ class ReviewViewSet(viewsets.ModelViewSet):
         title_id = self.kwargs.get('title_id')
         review_queryset = Review.objects.filter(title=title_id)
         return review_queryset
+
+
+class GenreViewSet(CreateListDestroyViewSet):
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
+    # permission_classes =
+    filter_backends = (filters.SearchFilter,)
+    # filterset_fields = ('name',)
+    search_fields = ('name',)
+
+
+class CategoryViewSet(CreateListDestroyViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+
+
+class TitleViewSet(viewsets.ModelViewSet):
+    queryset = Title.objects.all()
