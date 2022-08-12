@@ -1,8 +1,7 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers
+from django.utils import timezone
 
-from reviews.models import (Comment, Review, Genre, Category, Title,
-                            GenreConnect)
+from reviews.models import Comment, Review, Genre, Category, Title
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -44,27 +43,33 @@ class CategorySerializer(serializers.ModelSerializer):
 class TitleSerializer(serializers.ModelSerializer):
 
     genre = GenreSerializer(many=True)
-    category = CategorySerializer(many=True)
+    category = CategorySerializer()
 
     class Meta:
         fields = '__all__'
         model = Title
 
-        def create(self, validated_data):
-            genres = validated_data.pop('genre')
-            category = validated_data.pop('category')
 
-            categoru_from_bd, status = get_object_or_404(Category,
-                                                         slug=category)
-            validated_data[category] = categoru_from_bd.id
-            # title = Title.objects.create(**validated_data,
-            #                             category=categoru_from_bd)
-            title = Title.objects.create(**validated_data)
+class TitleCreateSerializer(serializers.ModelSerializer):
 
-            for genre in genres:
-                current_genre, status = Genre.objects.get_or_create(
-                    **genre)
-                # Не забыв указать к какому котику оно относится
-                GenreConnect.objects.create(
-                    title=title, genre=current_genre)
-            return title
+    category = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Category.objects.all()
+    )
+    genre = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Genre.objects.all(),
+        many=True
+    )
+
+    class Meta:
+        fields = '__all__'
+        model = Title
+
+        def validate_year(self, value):
+            year_now = timezone.now.year
+            if value <= 0 or value > year_now:
+                raise serializers.ValidationError(
+                    'Год создания должен быть нашей эры и не больше текущего.'
+                )
+            return value

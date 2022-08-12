@@ -4,7 +4,7 @@ from rest_framework import mixins
 # from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 
-from reviews.models import Comment, Review, Genre, Category
+from reviews.models import Comment, Review, Genre, Category, Title
 from .serializers import (ReviewSerializer,
                           CommentSerializer,
                           GenreSerializer,
@@ -62,3 +62,7 @@ class CategoryViewSet(CreateListDestroyViewSet):
     serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+
+
+class TitleViewSet(viewsets.ModelViewSet):
+    queryset = Title.objects.all()
