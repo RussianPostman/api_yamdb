@@ -2,7 +2,7 @@ from .models import User
 from .serializers import UserSerializer, UserCreateSerializer
 from rest_framework import viewsets, status
 from rest_framework.mixins import CreateModelMixin
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAdminUser
 from django.contrib.auth import get_user_model
 
 from rest_framework.decorators import api_view
@@ -40,7 +40,7 @@ def create_user(request):
 class UserViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
     queryset = User.objects.all()
-    # permission_class = ...
+    permission_class = (IsAdminUser,)
     serializer_class = UserSerializer
 
 
