@@ -14,6 +14,8 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from string import digits
 import random
+from .permissions import AdminOnly
+from rest_framework.pagination import LimitOffsetPagination
 
 
 User = get_user_model()
@@ -41,8 +43,9 @@ def create_user(request):
 class UserViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
     queryset = User.objects.all()
-    permission_classes = (IsAdminUser,)
+    permission_classes = (AdminOnly,)
     serializer_class = UserSerializer
+    pagination_class = LimitOffsetPagination
 
 
 @api_view(['POST'])
