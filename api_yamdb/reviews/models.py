@@ -76,7 +76,7 @@ class Title(models.Model):
 
 class Review(models.Model):
     title = models.ForeignKey(
-        to=Titles,
+        to=Title,
         on_delete=models.CASCADE,
         related_name='reviews',
         verbose_name='Произведение'
