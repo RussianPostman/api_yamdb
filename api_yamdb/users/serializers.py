@@ -20,6 +20,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email']
 
+    def validate_username(self, value):
+        if value == 'me':
+            raise serializers.ValidationError('Имя пользователя не может быть "me"')
+        return value
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
