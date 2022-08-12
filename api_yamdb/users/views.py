@@ -2,7 +2,7 @@ from .models import User
 from .serializers import UserSerializer, UserCreateSerializer
 from rest_framework import viewsets, status
 from rest_framework.mixins import CreateModelMixin
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from django.contrib.auth import get_user_model
 
 from rest_framework_simplejwt.tokens import AccessToken
@@ -14,8 +14,9 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from string import digits
 import random
-from .permissions import AdminOnly
+from .permissions import AdminAndSuperuserOnly
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.decorators import action
 
 
 User = get_user_model()
@@ -43,9 +44,22 @@ def create_user(request):
 class UserViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
     queryset = User.objects.all()
-    permission_classes = (AdminOnly,)
+    permission_classes = (AdminAndSuperuserOnly,)
     serializer_class = UserSerializer
     pagination_class = LimitOffsetPagination
+
+    @action(detail=False, methods=['get', 'patch'], url_path='me', permission_classes=[IsAuthenticated,])
+    def me_profile(self, request, pk=None):
+        # username = request.user.username
+        # user = User.objects.get(username=username)
+        # if request.method == 'PATCH':
+        #     serializer = UserSerializer(data=user)
+        #     serializer.is_valid()
+        #     serializer.save()
+        # else:
+        #     serializer = UserSerializer()
+        # return Response(serializer.data)
+        ...
 
 
 @api_view(['POST'])
