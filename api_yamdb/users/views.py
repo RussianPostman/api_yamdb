@@ -5,6 +5,7 @@ from rest_framework.mixins import CreateModelMixin
 from rest_framework.permissions import AllowAny, IsAdminUser
 from django.contrib.auth import get_user_model
 
+from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth.tokens import default_token_generator
@@ -40,7 +41,7 @@ def create_user(request):
 class UserViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
     queryset = User.objects.all()
-    permission_class = (IsAdminUser,)
+    permission_classes = (IsAdminUser,)
     serializer_class = UserSerializer
 
 
@@ -59,10 +60,12 @@ def create_token(request):
     
 
     if user.confirmation_code == confirmation_code:
+        token = AccessToken.for_user(user)
         return Response(
             {
-                'token': default_token_generator.make_token(user)
-            }
+        
+        'access': str(token)
+    }
         )
 
     return Response('Код подтверждения неверен', status=status.HTTP_400_BAD_REQUEST)
