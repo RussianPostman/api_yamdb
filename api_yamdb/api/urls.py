@@ -4,7 +4,8 @@ from rest_framework.routers import SimpleRouter
 from .views import (CommentViewSet,
                     ReviewViewSet,
                     GenreViewSet,
-                    CategoryViewSet)
+                    CategoryViewSet,
+                    TitleViewSet)
 
 router_v1 = SimpleRouter()
 
@@ -17,6 +18,11 @@ router_v1.register(
     'categories',
     CategoryViewSet,
     basename='categories'
+)
+router_v1.register(
+    'titles',
+    TitleViewSet,
+    basename='titles'
 )
 router_v1.register(
     r'titles/(?P<title_id>\d+)/reviews',
