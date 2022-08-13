@@ -1,10 +1,11 @@
 from rest_framework import viewsets
 from rest_framework.pagination import LimitOffsetPagination
-
+from rest_framework.permissions import AllowAny
 from rest_framework import mixins
 # from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 
+from users.permissions import AdminAndSuperuserOnly
 from reviews.models import Comment, Review, Genre, Category, Title
 from .serializers import (ReviewSerializer,
                           CommentSerializer,
@@ -57,6 +58,7 @@ class GenreViewSet(CreateListDestroyViewSet):
     filter_backends = (filters.SearchFilter,)
     # filterset_fields = ('name',)
     search_fields = ('name',)
+    
 
 
 class CategoryViewSet(CreateListDestroyViewSet):
@@ -64,6 +66,13 @@ class CategoryViewSet(CreateListDestroyViewSet):
     serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    lookup_field = 'slug'
+    permission_classes = (AdminAndSuperuserOnly,)
+
+    def get_permissions(self):
+        if self.action == 'list':
+            self.permission_classes = (AllowAny,)
+        return super().get_permissions()
 
 
 class TitleViewSet(viewsets.ModelViewSet):
