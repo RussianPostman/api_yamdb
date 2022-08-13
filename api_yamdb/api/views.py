@@ -6,7 +6,7 @@ from rest_framework import mixins
 from rest_framework import filters
 from .filters import TitleFilter
 
-from users.permissions import AdminAndSuperuserOnly
+from users.permissions import AdminAndSuperuserOnly, AdminModeratorOrAuthor
 from reviews.models import Comment, Review, Genre, Category, Title
 from .serializers import (ReviewSerializer,
                           CommentSerializer,
@@ -40,8 +40,9 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
-    # permission_classes = ...
+    permission_classes = (AdminModeratorOrAuthor,)
     serializer_class = ReviewSerializer
+
 
     def perform_create(self, serializer):
         title_id = self.kwargs.get('title_id')
@@ -51,6 +52,11 @@ class ReviewViewSet(viewsets.ModelViewSet):
         title_id = self.kwargs.get('title_id')
         review_queryset = Review.objects.filter(title=title_id)
         return review_queryset
+
+    def get_permissions(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            self.permission_classes = (AllowAny,)
+        return super().get_permissions()
 
 
 class GenreViewSet(viewsets.ModelViewSet):
