@@ -54,10 +54,16 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class GenreViewSet(CreateListDestroyViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    # permission_classes =
+    permission_classes = (AdminAndSuperuserOnly,)
     filter_backends = (filters.SearchFilter,)
     # filterset_fields = ('name',)
     search_fields = ('name',)
+    lookup_field = 'slug'
+
+    def get_permissions(self):
+        if self.action == 'list':
+            self.permission_classes = (AllowAny,)
+        return super().get_permissions()
     
 
 
