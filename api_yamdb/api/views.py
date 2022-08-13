@@ -89,7 +89,14 @@ class TitleViewSet(viewsets.ModelViewSet):
     serializer_class = TitleSerializer
     pagination_class = LimitOffsetPagination
     filter_class = filterset_class = TitleFilter
+    permission_classes = (AdminAndSuperuserOnly,)
+
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PATCH',):
             return TitleCreateSerializer
         return TitleSerializer
+
+    def get_permissions(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            self.permission_classes = (AllowAny,)
+        return super().get_permissions()
