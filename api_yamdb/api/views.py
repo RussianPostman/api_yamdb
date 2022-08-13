@@ -64,7 +64,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(CreateListDestroyViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (AdminAndSuperuserOnly,)
@@ -80,7 +80,7 @@ class GenreViewSet(viewsets.ModelViewSet):
     
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(CreateListDestroyViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter,)
