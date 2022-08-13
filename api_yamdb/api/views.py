@@ -4,6 +4,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework import mixins
 # from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from .filters import TitleFilter
 
 from users.permissions import AdminAndSuperuserOnly
 from reviews.models import Comment, Review, Genre, Category, Title
@@ -11,7 +12,8 @@ from .serializers import (ReviewSerializer,
                           CommentSerializer,
                           GenreSerializer,
                           CategorySerializer,
-                          TitleSerializer)
+                          TitleSerializer,
+                          TitleCreateSerializer)
 
 
 class CreateListDestroyViewSet(mixins.CreateModelMixin,
@@ -51,7 +53,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         return review_queryset
 
 
-class GenreViewSet(CreateListDestroyViewSet):
+class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (AdminAndSuperuserOnly,)
@@ -67,7 +69,7 @@ class GenreViewSet(CreateListDestroyViewSet):
     
 
 
-class CategoryViewSet(CreateListDestroyViewSet):
+class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter,)
@@ -82,7 +84,12 @@ class CategoryViewSet(CreateListDestroyViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
+
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
     pagination_class = LimitOffsetPagination
-
+    filter_class = filterset_class = TitleFilter
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PATCH',):
+            return TitleCreateSerializer
+        return TitleSerializer
