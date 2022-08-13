@@ -46,7 +46,8 @@ class TitleSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
 
     class Meta:
-        fields = '__all__'
+        fields = (
+            'id', 'name', 'year', 'description', 'genre', 'category')
         model = Title
 
 
@@ -63,7 +64,8 @@ class TitleCreateSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        fields = '__all__'
+        fields = (
+            'id', 'name', 'year', 'description', 'genre', 'category')
         model = Title
 
         def validate_year(self, value):

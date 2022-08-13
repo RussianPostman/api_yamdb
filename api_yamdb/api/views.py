@@ -50,7 +50,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         return review_queryset
 
 
-class GenreViewSet(CreateListDestroyViewSet):
+class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     # permission_classes =
@@ -59,7 +59,7 @@ class GenreViewSet(CreateListDestroyViewSet):
     search_fields = ('name',)
 
 
-class CategoryViewSet(CreateListDestroyViewSet):
+class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter,)
@@ -69,4 +69,3 @@ class CategoryViewSet(CreateListDestroyViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
-
