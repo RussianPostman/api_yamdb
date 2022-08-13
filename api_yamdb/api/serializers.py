@@ -1,11 +1,11 @@
-from rest_framework import serializers
-from django.utils import timezone
-from rest_framework.validators import UniqueTogetherValidator
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from rest_framework import serializers
 
 from reviews.models import Comment, Review, Genre, Category, Title
 
 User = get_user_model()
+
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
@@ -15,9 +15,6 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'text', 'author', 'pub_date',)
         model = Comment
-
-        
-
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -45,7 +42,6 @@ class TitleSerializer(serializers.ModelSerializer):
         model = Title
 
 
-
 class TitleCreateSerializer(serializers.ModelSerializer):
 
     category = serializers.SlugRelatedField(
@@ -70,6 +66,7 @@ class TitleCreateSerializer(serializers.ModelSerializer):
                     'Год создания должен быть нашей эры и не больше текущего.'
                 )
             return value
+
 
 class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(

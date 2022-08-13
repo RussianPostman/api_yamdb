@@ -48,7 +48,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
     permission_classes = (AdminModeratorOrAuthor,)
     serializer_class = ReviewSerializer
 
-
     def perform_create(self, serializer):
         title_id = self.kwargs.get('title_id')
         serializer.save(author=self.request.user, title_id=title_id)
@@ -77,7 +76,6 @@ class GenreViewSet(CreateListDestroyViewSet):
         if self.action == 'list':
             self.permission_classes = (AllowAny,)
         return super().get_permissions()
-    
 
 
 class CategoryViewSet(CreateListDestroyViewSet):
