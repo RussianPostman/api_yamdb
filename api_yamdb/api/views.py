@@ -4,13 +4,15 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework import mixins
 # from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from .filters import TitleFilter
 
 from reviews.models import Comment, Review, Genre, Category, Title
 from .serializers import (ReviewSerializer,
                           CommentSerializer,
                           GenreSerializer,
                           CategorySerializer,
-                          TitleSerializer)
+                          TitleSerializer,
+                          TitleCreateSerializer)
 
 
 class CreateListDestroyViewSet(mixins.CreateModelMixin,
@@ -67,5 +69,12 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
+
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
+    filter_class = filterset_class = TitleFilter
+
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PATCH',):
+            return TitleCreateSerializer
+        return TitleSerializer

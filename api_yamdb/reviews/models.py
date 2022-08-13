@@ -16,9 +16,6 @@ class Category(models.Model):
         verbose_name='Слаг категории.'
     )
 
-    def __str__(self) -> str:
-        return self.slug
-
 
 class Genre(models.Model):
     """Жанры произведений."""
@@ -31,9 +28,6 @@ class Genre(models.Model):
         unique=True,
         verbose_name='Слаг жанра.'
     )
-
-    def __str__(self) -> str:
-        return self.slug
 
 
 class Title(models.Model):
