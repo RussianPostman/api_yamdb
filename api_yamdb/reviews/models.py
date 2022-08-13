@@ -55,7 +55,8 @@ class Title(models.Model):
             MinValueValidator(0),
             MaxValueValidator(10),
         ],
-        verbose_name='Рейтинг'
+        verbose_name='Рейтинг',
+        null=True, blank=True
     )
     description = models.TextField(
         verbose_name='Описание произведения.',

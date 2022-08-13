@@ -42,12 +42,13 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class TitleSerializer(serializers.ModelSerializer):
 
-    genre = GenreSerializer(many=True)
-    category = CategorySerializer()
+    genre = GenreSerializer(many=True, read_only=True)
+    category = CategorySerializer(read_only=True)
 
     class Meta:
         fields = '__all__'
         model = Title
+
 
 
 class TitleCreateSerializer(serializers.ModelSerializer):

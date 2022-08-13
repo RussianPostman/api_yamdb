@@ -84,4 +84,5 @@ class CategoryViewSet(CreateListDestroyViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
+    pagination_class = LimitOffsetPagination
 
