@@ -6,8 +6,4 @@ pytest==6.2.4
 pytest-django==4.4.0
 pytest-pythonpath==0.7.3
 django-filter==2.4.0
-<<<<<<< HEAD
 djangorestframework-simplejwt==4.7.2
-=======
-djangorestframework-simplejwt==5.2.0
->>>>>>> 0552dd7715a677be0b65731656209c7ad4ad3f85
