@@ -12,6 +12,8 @@ from rest_framework_simplejwt.tokens import AccessToken
 from .models import User
 from .permissions import AdminAndSuperuserOnly
 from .serializers import UserSerializer, UserCreateSerializer
+from rest_framework.serializers import SlugRelatedField
+
 
 User = get_user_model()
 
@@ -41,7 +43,7 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (AdminAndSuperuserOnly,)
     serializer_class = UserSerializer
     pagination_class = LimitOffsetPagination
-
+    
     @action(
         detail=False,
         methods=['get', 'patch'],
@@ -49,16 +51,16 @@ class UserViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated, ]
     )
     def me_profile(self, request, pk=None):
-        # username = request.user.username
-        # user = User.objects.get(username=username)
-        # if request.method == 'PATCH':
-        #     serializer = UserSerializer(data=user)
-        #     serializer.is_valid()
-        #     serializer.save()
-        # else:
-        #     serializer = UserSerializer()
-        # return Response(serializer.data)
-        ...
+        username = request.user.username
+        user = User.objects.get(username=username)
+        if request.method == 'PATCH':
+            serializer=UserSerializer(user, data=request.data, partial=True, context={'request':request})
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+            else:
+                print(serializer.errors)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
 
 
 @api_view(['POST'])
