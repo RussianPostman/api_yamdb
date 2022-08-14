@@ -16,9 +16,6 @@ class Category(models.Model):
         verbose_name='Слаг категории.'
     )
 
-    def __str__(self) -> str:
-        return self.slug
-
 
 class Genre(models.Model):
     """Жанры произведений."""
@@ -32,9 +29,6 @@ class Genre(models.Model):
         verbose_name='Слаг жанра.'
     )
 
-    def __str__(self) -> str:
-        return self.slug
-
 
 class Title(models.Model):
     """Произведение искусства."""
@@ -44,9 +38,6 @@ class Title(models.Model):
         verbose_name='Название произведения.'
     )
     year = models.IntegerField(
-        validators=[
-            MaxValueValidator(2022),
-        ],
         verbose_name='Год создания.'
     )
     rating = models.SmallIntegerField(
@@ -55,15 +46,19 @@ class Title(models.Model):
             MinValueValidator(0),
             MaxValueValidator(10),
         ],
-        verbose_name='Рейтинг'
+        verbose_name='Рейтинг',
+        null=True, blank=True
     )
     description = models.TextField(
         verbose_name='Описание произведения.',
-        blank=True, null=True
+        blank=True,
+        null=True
     )
     genre = models.ManyToManyField(
         Genre,
-        through='GenreConnect'
+        through='GenreConnect',
+        related_name='genre',
+        verbose_name='Жанр'
     )
     category = models.ForeignKey(
         Category,
@@ -103,6 +98,13 @@ class Review(models.Model):
     class Meta:
         verbose_name = 'Ревью'
         verbose_name_plural = 'Ревью'
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=['title', 'author'],
+                name='unique_review'
+            )
+        ]
 
     def __str__(self):
         return f'{self.author.username}: {self.text}'
