@@ -44,13 +44,6 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     pagination_class = LimitOffsetPagination
     
-    # user = SlugRelatedField(
-    #     slug_field='username', read_only=True
-    # )
-    
-    # email = SlugRelatedField(slug_field='email', read_only=True)
-    # confirmation_code = SlugRelatedField(slug_field='confirmation_code', read_only=True)
-    
     @action(
         detail=False,
         methods=['get', 'patch'],
@@ -61,11 +54,11 @@ class UserViewSet(viewsets.ModelViewSet):
         username = request.user.username
         user = User.objects.get(username=username)
         if request.method == 'PATCH':
-            serializer=UserSerializer(data=request.data)
-            if serializer.is_valid():
+            serializer=UserSerializer(user, data=request.data, partial=True)
+            if serializer.is_valid(raise_exception=True):
                 serializer.save()
             else:
-                print(f"### {serializer.errors}")
+                print(serializer.errors)
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
