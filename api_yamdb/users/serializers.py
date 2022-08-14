@@ -33,8 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
         ]
     
     def validate_role(self, role):
-        req_user = self.context.get('username')
-        print(f"### {self.context}")
+        req_user = self.context['request'].user
         user = User.objects.get(username=req_user)
         if user.role == 'user':
             role=user.role
