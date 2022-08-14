@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from rest_framework.fields import CurrentUserDefault
 
 
 User = get_user_model()
@@ -31,10 +30,10 @@ class UserSerializer(serializers.ModelSerializer):
             'bio',
             'role'
         ]
-    
+
     def validate_role(self, role):
         req_user = self.context['request'].user
         user = User.objects.get(username=req_user)
         if user.role == 'user':
-            role=user.role
+            role = user.role
         return role
