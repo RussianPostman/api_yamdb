@@ -1,18 +1,18 @@
 import random
 from string import digits
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
-from rest_framework import viewsets, status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
-from .models import User
-from .permissions import AdminAndSuperuserOnly
-from .serializers import UserSerializer, UserCreateSerializer
 
+from .permissions import AdminAndSuperuserOnly
+from .serializers import UserCreateSerializer, UserSerializer
 
 User = get_user_model()
 
@@ -60,8 +60,6 @@ class UserViewSet(viewsets.ModelViewSet):
             )
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-            else:
-                print(serializer.errors)
         serializer = UserSerializer(user)
         return Response(serializer.data)
 

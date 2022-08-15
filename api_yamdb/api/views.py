@@ -3,11 +3,11 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import AllowAny
 from rest_framework import mixins
 from django.shortcuts import get_object_or_404
-# from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from .filters import TitleFilter
 
-from users.permissions import AdminAndSuperuserOnly, AdminModeratorOrAuthor
+from users.permissions import (AdminAndSuperuserOnly,
+                               AuthenticatedPrivilegedUsersOrReadOnly)
 from reviews.models import Comment, Review, Genre, Category, Title
 from .serializers import (ReviewSerializer,
                           CommentSerializer,
@@ -26,7 +26,7 @@ class CreateListDestroyViewSet(mixins.CreateModelMixin,
 
 class CommentViewSet(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
-    permission_classes = (AdminModeratorOrAuthor,)
+    permission_classes = (AuthenticatedPrivilegedUsersOrReadOnly,)
     serializer_class = CommentSerializer
 
     def get_queryset(self):
@@ -47,7 +47,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
-    permission_classes = (AdminModeratorOrAuthor,)
+    permission_classes = (AuthenticatedPrivilegedUsersOrReadOnly,)
     serializer_class = ReviewSerializer
 
     def perform_create(self, serializer):
