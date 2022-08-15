@@ -3,6 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
+    """Пользователь проекта YaMDB"""
     ROLE_CHOICES = (
         ('user', 'Пользователь'),
         ('moderator', 'Модератор'),
