@@ -37,7 +37,7 @@ class Title(models.Model):
         max_length=100,
         verbose_name='Название произведения.'
     )
-    year = models.IntegerField(
+    year = models.PositiveSmallIntegerField(
         verbose_name='Год создания.'
     )
     rating = models.SmallIntegerField(
@@ -47,7 +47,7 @@ class Title(models.Model):
             MaxValueValidator(10),
         ],
         verbose_name='Рейтинг',
-        null=True, blank=True
+        blank=True
     )
     description = models.TextField(
         verbose_name='Описание произведения.',
@@ -101,13 +101,13 @@ class Review(models.Model):
 
         constraints = [
             models.UniqueConstraint(
-                fields=['title', 'author'],
+                fields=('title', 'author'),
                 name='unique_review'
             )
         ]
 
     def __str__(self):
-        return f'{self.author.username}: {self.text}'
+        return f'Коммент {self.author.username} на {self.title.name}'
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
