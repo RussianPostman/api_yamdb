@@ -26,3 +26,14 @@ class AdminModeratorOrAuthor(BasePermission):
             or request.user.is_superuser
             or request.user.role == 'moderator'
         )
+
+
+class ListOrAdminModeratOnly(BasePermission):
+    def has_permission(self, request, view):
+        return (
+            request.method in SAFE_METHODS
+            or request.user.is_superuser
+            or request.user.is_authenticated and (
+                request.user.role == 'admin'
+            )
+        )
