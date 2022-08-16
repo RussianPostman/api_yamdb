@@ -6,7 +6,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import filters
 from .filters import TitleFilter
 
-from users.permissions import AdminModeratorOrAuthor, ListOrAdminModeratOnly
+from users.permissions import (AuthenticatedPrivilegedUsersOrReadOnly,
+                               ListOrAdminModeratOnly)
 from reviews.models import Review, Genre, Category, Title
 from .serializers import (ReviewSerializer,
                           CommentSerializer,
