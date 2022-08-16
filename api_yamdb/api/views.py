@@ -5,8 +5,9 @@ from rest_framework import mixins
 from django.shortcuts import get_object_or_404
 from rest_framework import filters
 from .filters import TitleFilter
+# from django.http import Http404
 
-from users.permissions import AdminAndSuperuserOnly, AdminModeratorOrAuthor
+from users.permissions import AdminModeratorOrAuthor, ListOrAdminModeratOnly
 from reviews.models import Comment, Review, Genre, Category, Title
 from .serializers import (ReviewSerializer,
                           CommentSerializer,
@@ -31,6 +32,8 @@ class CommentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         review_id = self.kwargs.get('review_id')
         comments_queryset = Comment.objects.filter(review=review_id)
+        # if len(comments_queryset) == 0:
+        #     raise Http404
         return comments_queryset
 
     def perform_create(self, serializer):
@@ -62,15 +65,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class GenreViewSet(CreateListDestroyViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = (AdminAndSuperuserOnly,)
+    permission_classes = (ListOrAdminModeratOnly,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
-
-    def get_permissions(self):
-        if self.action == 'list':
-            self.permission_classes = (AllowAny,)
-        return super().get_permissions()
 
 
 class CategoryViewSet(CreateListDestroyViewSet):
@@ -79,12 +77,7 @@ class CategoryViewSet(CreateListDestroyViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
-    permission_classes = (AdminAndSuperuserOnly,)
-
-    def get_permissions(self):
-        if self.action == 'list':
-            self.permission_classes = (AllowAny,)
-        return super().get_permissions()
+    permission_classes = (ListOrAdminModeratOnly,)
 
 
 class TitleViewSet(viewsets.ModelViewSet):
@@ -93,14 +86,9 @@ class TitleViewSet(viewsets.ModelViewSet):
     serializer_class = TitleSerializer
     pagination_class = LimitOffsetPagination
     filter_class = filterset_class = TitleFilter
-    permission_classes = (AdminAndSuperuserOnly,)
+    permission_classes = (ListOrAdminModeratOnly,)
 
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PATCH',):
             return TitleCreateSerializer
         return TitleSerializer
-
-    def get_permissions(self):
-        if self.action == 'list' or self.action == 'retrieve':
-            self.permission_classes = (AllowAny,)
-        return super().get_permissions()

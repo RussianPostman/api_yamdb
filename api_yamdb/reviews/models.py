@@ -40,15 +40,6 @@ class Title(models.Model):
     year = models.PositiveSmallIntegerField(
         verbose_name='Год создания.'
     )
-    rating = models.SmallIntegerField(
-        default=None,
-        validators=[
-            MinValueValidator(0),
-            MaxValueValidator(10),
-        ],
-        verbose_name='Рейтинг',
-        blank=True
-    )
     description = models.TextField(
         verbose_name='Описание произведения.',
         blank=True,
