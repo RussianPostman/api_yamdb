@@ -25,7 +25,7 @@ class CreateListDestroyViewSet(mixins.CreateModelMixin,
 
 class CommentViewSet(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
-    permission_classes = (AdminModeratorOrAuthor,)
+    permission_classes = (AuthenticatedPrivilegedUsersOrReadOnly,)
     serializer_class = CommentSerializer
 
     def get_queryset(self):
@@ -41,7 +41,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
-    permission_classes = (AdminModeratorOrAuthor,)
+    permission_classes = (AuthenticatedPrivilegedUsersOrReadOnly,)
     serializer_class = ReviewSerializer
 
     def perform_create(self, serializer):
