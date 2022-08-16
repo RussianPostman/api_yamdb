@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import serializers
@@ -38,6 +39,14 @@ class TitleSerializer(serializers.ModelSerializer):
 
     genre = GenreSerializer(many=True, read_only=True)
     category = CategorySerializer(read_only=True)
+    rating = serializers.SerializerMethodField()
+
+    def get_rating(self, obj):
+        rating = obj.reviews.aggregate(Avg('score')).get('score__avg')
+        print(rating)
+        if not rating:
+            return rating
+        return round(rating, 0)
 
     class Meta:
         fields = (
@@ -81,10 +90,11 @@ class ReviewSerializer(serializers.ModelSerializer):
         author = request.user
         title_id = self.context['view'].kwargs.get('title_id')
         title = get_object_or_404(Title, pk=title_id)
-        if request.method == 'POST':
-            if Review.objects.filter(title=title, author=author).exists():
-                raise serializers.ValidationError('Вы уже оставили свой отзыв'
-                                                  'к этому произведению!')
+        if request.method == 'POST' and Review.objects.filter(
+            title=title, author=author
+        ).exists():
+            raise serializers.ValidationError('Вы уже оставили свой отзыв'
+                                              'к этому произведению!')
         return data
 
     class Meta:
