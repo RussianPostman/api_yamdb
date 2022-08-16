@@ -5,10 +5,9 @@ from rest_framework import mixins
 from django.shortcuts import get_object_or_404
 from rest_framework import filters
 from .filters import TitleFilter
-# from django.http import Http404
 
 from users.permissions import AdminModeratorOrAuthor, ListOrAdminModeratOnly
-from reviews.models import Comment, Review, Genre, Category, Title
+from reviews.models import Review, Genre, Category, Title
 from .serializers import (ReviewSerializer,
                           CommentSerializer,
                           GenreSerializer,
@@ -31,10 +30,8 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         review_id = self.kwargs.get('review_id')
-        comments_queryset = Comment.objects.filter(review=review_id)
-        # if len(comments_queryset) == 0:
-        #     raise Http404
-        return comments_queryset
+        review = get_object_or_404(Review, id=review_id)
+        return review.comments.all()
 
     def perform_create(self, serializer):
         review_id = self.kwargs.get('review_id')
