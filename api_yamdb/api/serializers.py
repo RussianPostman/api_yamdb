@@ -43,10 +43,7 @@ class TitleSerializer(serializers.ModelSerializer):
 
     def get_rating(self, obj):
         rating = obj.reviews.aggregate(Avg('score')).get('score__avg')
-        print(rating)
-        if not rating:
-            return rating
-        return round(rating, 0)
+        return rating if not rating else round(rating, 0)
 
     class Meta:
         fields = (

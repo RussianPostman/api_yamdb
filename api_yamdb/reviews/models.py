@@ -1,6 +1,17 @@
+import datetime
 from django.db import models
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
+
+from .validators import max_value_current_year
+
+
+def current_year():
+    return datetime.date.today().year
+
+
+def max_value_current_year(value):
+    return MaxValueValidator(current_year())(value)
 
 
 class Category(models.Model):
@@ -8,13 +19,20 @@ class Category(models.Model):
 
     name = models.CharField(
         max_length=256,
-        verbose_name='Название категории.'
+        verbose_name='Название категории'
     )
     slug = models.SlugField(
         unique=True,
         max_length=50,
-        verbose_name='Слаг категории.'
+        verbose_name='Слаг категории'
     )
+
+    class Meta:
+        verbose_name = 'Сатегория'
+        verbose_name_plural = 'Категории'
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Genre(models.Model):
@@ -22,12 +40,19 @@ class Genre(models.Model):
 
     name = models.CharField(
         max_length=256,
-        verbose_name='Название категории.'
+        verbose_name='Название категории'
     )
     slug = models.SlugField(
         unique=True,
-        verbose_name='Слаг жанра.'
+        verbose_name='Слаг жанра'
     )
+
+    class Meta:
+        verbose_name = 'Жанр'
+        verbose_name_plural = 'Жанры'
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Title(models.Model):
@@ -35,15 +60,17 @@ class Title(models.Model):
 
     name = models.CharField(
         max_length=100,
-        verbose_name='Название произведения.'
+        verbose_name='Название произведения'
     )
     year = models.PositiveSmallIntegerField(
-        verbose_name='Год создания.'
+        verbose_name='Год создания',
+        validators=[
+            MinValueValidator(0),
+            max_value_current_year]
     )
     description = models.TextField(
-        verbose_name='Описание произведения.',
+        verbose_name='Описание произведения',
         blank=True,
-        null=True
     )
     genre = models.ManyToManyField(
         Genre,
@@ -58,6 +85,13 @@ class Title(models.Model):
         related_name='category',
         verbose_name='Категория',
     )
+
+    class Meta:
+        verbose_name = 'Произведение'
+        verbose_name_plural = 'Произведения'
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Review(models.Model):
@@ -87,8 +121,8 @@ class Review(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Ревью'
-        verbose_name_plural = 'Ревью'
+        verbose_name = 'Обзор'
+        verbose_name_plural = 'Обзоры'
 
         constraints = [
             models.UniqueConstraint(
@@ -98,16 +132,7 @@ class Review(models.Model):
         ]
 
     def __str__(self):
-        return f'Коммент {self.author.username} на {self.title.name}'
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        title = self.title
-        rating = Review.objects.filter(title=title).aggregate(
-            average=models.Avg('score'))
-        if rating['average']:
-            title.rating = int(rating['average'])
-        title.save()
+        return f'Оценка {self.author.username} на {self.title.name}'
 
 
 class Comment(models.Model):
@@ -134,7 +159,7 @@ class Comment(models.Model):
         verbose_name_plural = 'Комментарии'
 
     def __str__(self):
-        return f'{self.author.username}: {self.text}'
+        return f'Оценка {self.author.username} на {self.review.title.name}'
 
 
 class GenreConnect(models.Model):

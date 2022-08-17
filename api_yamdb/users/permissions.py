@@ -5,6 +5,7 @@ class AdminAndSuperuserOnly(BasePermission):
     """Разрешение контролирующее разрешение
     только для пользователей с ролью администратор
     и ролью суперпользователя"""
+
     def has_permission(self, request, view):
         return (
             request.user.is_authenticated and (
@@ -18,6 +19,7 @@ class AuthenticatedPrivilegedUsersOrReadOnly(BasePermission):
     """Разрешение доступа на чтение всем и
     на редактирование только автору и
     администратору/модератору/суперпользователю"""
+
     def has_permission(self, request, view):
         return (
             request.method in SAFE_METHODS
@@ -35,11 +37,13 @@ class AuthenticatedPrivilegedUsersOrReadOnly(BasePermission):
 
 
 class ListOrAdminModeratOnly(BasePermission):
+    """Разрешает получения списка всем и редактирование
+    только  администратору/суперпользователю"""
+
     def has_permission(self, request, view):
         return (
             request.method in SAFE_METHODS
             or request.user.is_superuser
-            or request.user.is_authenticated and (
-                request.user.role == 'admin'
-            )
+            or request.user.is_authenticated
+            and request.user.is_admin
         )
