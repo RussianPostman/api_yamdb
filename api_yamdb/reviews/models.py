@@ -1,17 +1,8 @@
-import datetime
 from django.db import models
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 from .validators import max_value_current_year
-
-
-def current_year():
-    return datetime.date.today().year
-
-
-def max_value_current_year(value):
-    return MaxValueValidator(current_year())(value)
 
 
 class Category(models.Model):
@@ -27,12 +18,12 @@ class Category(models.Model):
         verbose_name='Слаг категории'
     )
 
+    def __str__(self) -> str:
+        return self.name
+
     class Meta:
         verbose_name = 'Сатегория'
         verbose_name_plural = 'Категории'
-
-    def __str__(self) -> str:
-        return self.name
 
 
 class Genre(models.Model):
@@ -47,12 +38,12 @@ class Genre(models.Model):
         verbose_name='Слаг жанра'
     )
 
+    def __str__(self) -> str:
+        return self.name
+
     class Meta:
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
-
-    def __str__(self) -> str:
-        return self.name
 
 
 class Title(models.Model):
@@ -86,12 +77,12 @@ class Title(models.Model):
         verbose_name='Категория',
     )
 
+    def __str__(self) -> str:
+        return self.name
+
     class Meta:
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
-
-    def __str__(self) -> str:
-        return self.name
 
 
 class Review(models.Model):
@@ -120,6 +111,9 @@ class Review(models.Model):
         auto_now_add=True
     )
 
+    def __str__(self):
+        return f'Оценка {self.author.username} на {self.title.name}'
+
     class Meta:
         verbose_name = 'Обзор'
         verbose_name_plural = 'Обзоры'
@@ -130,9 +124,6 @@ class Review(models.Model):
                 name='unique_review'
             )
         ]
-
-    def __str__(self):
-        return f'Оценка {self.author.username} на {self.title.name}'
 
 
 class Comment(models.Model):
@@ -153,6 +144,9 @@ class Comment(models.Model):
         verbose_name='Время добавления',
         auto_now_add=True
     )
+
+    def __str__(self):
+        return f'Оценка {self.author.username} на {self.review.title.name}'
 
     class Meta:
         verbose_name = 'Комментарий'
