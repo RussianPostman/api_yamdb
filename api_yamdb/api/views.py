@@ -1,6 +1,5 @@
 from rest_framework import viewsets
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import AllowAny
 from rest_framework import mixins
 from django.shortcuts import get_object_or_404
 from rest_framework import filters
@@ -53,11 +52,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
         title_id = self.kwargs.get('title_id')
         review_queryset = Review.objects.filter(title=title_id)
         return review_queryset
-
-    def get_permissions(self):
-        if self.action == 'list' or self.action == 'retrieve':
-            self.permission_classes = (AllowAny,)
-        return super().get_permissions()
 
 
 class GenreViewSet(CreateListDestroyViewSet):
